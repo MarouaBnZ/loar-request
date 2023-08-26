@@ -3,6 +3,8 @@ import "./FormStyle.css";
 import Module from "./Module";
 import { useState } from "react";
 function LoanForm() {
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const [loanInputs, setLoanInputs] = useState({
     name: "",
     phoneNumber: "",
@@ -11,10 +13,25 @@ function LoanForm() {
     salaryRange: "",
   });
 
+  function handleDivClick() {
+    console.log("div clicked");
+    if (showModal) {
+      setShowModal(false);
+    }
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
-    alert("salem");
+    setErrorMessage(null);
+    const { age, phoneNumber } = loanInputs;
+    if (age < 18 || age > 100) {
+      setErrorMessage("The age is not allowed");
+    } else if (phoneNumber.length < 8 || phoneNumber.length > 11) {
+      setErrorMessage("Phone Number format is incorrect");
+    }
+    setShowModal(true);
   }
+
   const btnDisabled =
     loanInputs.name == "" ||
     loanInputs.phoneNumber == "" ||
@@ -22,6 +39,7 @@ function LoanForm() {
 
   return (
     <div
+      onClick={handleDivClick}
       className="flex"
       style={{ backgroundColor: "", flexDirection: "column" }}
     >
@@ -78,7 +96,8 @@ function LoanForm() {
           Submit
         </button>
       </form>
-      {/* <Module id="modal" /> */}
+
+      <Module isVisible={showModal} errorMessage={errorMessage} />
     </div>
   );
 }
